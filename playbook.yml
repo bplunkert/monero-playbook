@@ -1,0 +1,18 @@
+---
+- hosts: monero
+  vars:
+    monero_version: v0.10.3.1
+    source_dir: '/usr/src/monero'
+  remote_user: vagrant
+  become: true
+  tasks:
+    - name: Download monero
+      git:
+        repo: 'https://github.com/monero-project/monero'
+        dest: "{{ source_dir }}"
+        version: "{{ monero_version }}"
+
+    - name: Build monero docker image
+      command: "docker build -t monero/{{ monero_version }} ."
+      args:
+        chdir: "{{ source_dir }}"
